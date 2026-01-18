@@ -1,17 +1,20 @@
 #pragma once
 #include <cstdint>
 #include <deque>
-#include <vector>
 #include <memory>
-#include <concepts>
-#include <iterator>
 
 /// This is a stable deque. This is not the most efficent implementation
-/// (notice, not allocating chunks), nor did I implement every stl method.
+/// (notice, not allocating in chunks), nor did I implement every stl method.
 /// Despite this, the implementation is complete enough to demonstrate that
 /// a stable_deque is possible and nearly the exact same as a stable_vector
-/// (node-list is backed by a deque instead of a vector).
-template<typename T, typename Allocator = std::allocator<T>>
+/// (node-list is backed by a deque instead of a vector), all whilst supporting
+/// a not completly atrocious O(1) random access time.
+///
+/// It is best if an arena-allocator is used with stable_deque to improve
+/// spatial locality.
+
+// A stable deque implementation
+template <typename T, typename Allocator = std::allocator<T>>
 class stable_deque
 {
     struct Node
@@ -22,144 +25,142 @@ class stable_deque
         int64_t pos_in_nodes;
     };
 
-    using NodePAllocator = std::allocator_traits<Allocator>::template rebind_alloc<Node*>;
+    using NodePAllocator = std::allocator_traits<Allocator>::template rebind_alloc<Node *>;
     using NodePAllocatorTraits = std::allocator_traits<NodePAllocator>;
 
     using NodeAllocator = std::allocator_traits<Allocator>::template rebind_alloc<Node>;
-	using NodeAllocatorTraits = std::allocator_traits<NodeAllocator>;
+    using NodeAllocatorTraits = std::allocator_traits<NodeAllocator>;
 
-	using NodesDeque = std::deque<Node*, NodePAllocator>;
+    using NodesDeque = std::deque<Node *, NodePAllocator>;
 
-	class iterator
+    class iterator
     {
         friend class stable_deque;
 
         // Unlike a stable_vector, we need one additional pointer to store the deque that
-        // contains our actual `Node`'s.
-        // This is required since unlike a stable_vector
-        // which has its `Node`'s stored in a contiguous vector (pointer arithmetic iterates
-        // to the next node), a stable_deque is backed by a non-contiguous container deque.
+        // contains our actual `Node` data.
+        // This is required since unlike a stable_vector which has its `Node`'s stored in
+        // a contiguous vector (pointer arithmetic iterates to the next node), a stable_deque
+        // is backed by a non-contiguous container (a deque).
         // Therefore we require an additional pointer so that we have a way to fetch "the next node".
-        NodesDeque& nodes_ref;
-        Node* node;
+        NodesDeque &nodes_ref;
+        Node *node;
 
-        iterator(Node* node, NodesDeque& nodes_ref) :
-            node(node), nodes_ref(nodes_ref)
+        iterator(Node *node, NodesDeque &nodes_ref) : node(node), nodes_ref(nodes_ref)
         {
         }
 
     public:
-		iterator(const iterator& iter) :
-            nodes_ref(iter.nodes_ref), node(iter.node)
+        iterator(const iterator &iter) : nodes_ref(iter.nodes_ref), node(iter.node)
         {
         }
 
-        T& operator*()  const
+        T &operator*() const
         {
-            return  node->data;
+            return node->data;
         }
 
-        //Increment / Decrement
-        iterator& operator++()
-        {
-            *this += 1;
-            return *this;
-        }
-
-        iterator& operator++(int)
+        // Increment / Decrement
+        iterator &operator++()
         {
             *this += 1;
             return *this;
         }
 
-        iterator& operator--()
+        iterator &operator++(int)
+        {
+            *this += 1;
+            return *this;
+        }
+
+        iterator &operator--()
         {
             *this -= 1;
             return *this;
         }
 
-        iterator& operator--(int)
+        iterator &operator--(int)
         {
             *this -= 1;
             return *this;
         }
 
-        T& operator[](int64_t offset) const
+        T &operator[](int64_t offset) const
         {
             return nodes_ref[node->pos_in_nodes + offset]->data;
         }
 
-        iterator& operator+=(int64_t offset)
+        iterator &operator+=(int64_t offset)
         {
-			node = nodes_ref[node->pos_in_nodes + offset];
+            node = nodes_ref[node->pos_in_nodes + offset];
             return *this;
         }
 
-        iterator& operator-=(int64_t offset)
+        iterator &operator-=(int64_t offset)
         {
             *this += -offset;
             return *this;
         }
 
-        friend iterator operator+(const iterator& left, int64_t offset)
+        friend iterator operator+(const iterator &left, int64_t offset)
         {
             iterator tmp(left);
             tmp += offset;
             return tmp;
         }
 
-        friend iterator operator+(int64_t offset, const iterator& right)
+        friend iterator operator+(int64_t offset, const iterator &right)
         {
             iterator tmp(right);
             tmp += offset;
             return tmp;
         }
 
-        friend iterator operator-(const iterator& left, int64_t offset)
+        friend iterator operator-(const iterator &left, int64_t offset)
         {
             iterator tmp(left);
             tmp -= offset;
             return tmp;
         }
 
-        friend int64_t operator-(const iterator& left, const iterator& right)
+        friend int64_t operator-(const iterator &left, const iterator &right)
         {
             return left.node->pos_in_nodes - right.node->pos_in_nodes;
         }
 
-        //Comparison operators
-        friend bool operator==(const iterator& l, const iterator& r)
+        // Comparison operators
+        friend bool operator==(const iterator &l, const iterator &r)
         {
             return l.node == r.node;
         }
 
-        friend bool operator!=(const iterator& l, const iterator& r)
+        friend bool operator!=(const iterator &l, const iterator &r)
         {
             return l.node != r.node;
         }
 
-        friend bool operator<(const iterator& l, const iterator& r)
+        friend bool operator<(const iterator &l, const iterator &r)
         {
             return l.node->pos_in_nodes < r.node->pos_in_nodes;
         }
 
-        friend bool operator<=(const iterator& l, const iterator& r)
+        friend bool operator<=(const iterator &l, const iterator &r)
         {
             return l.node->pos_in_nodes <= r.node->pos_in_nodes;
         }
 
-        friend bool operator>(const iterator& l, const iterator& r)
+        friend bool operator>(const iterator &l, const iterator &r)
         {
             return l.node->pos_in_nodes > r.node->pos_in_nodes;
         }
 
-        friend bool operator>=(const iterator& l, const iterator& r)
+        friend bool operator>=(const iterator &l, const iterator &r)
         {
             return l.node->pos_in_nodes >= r.node->pos_in_nodes;
         }
     };
 
-    template<int howMuchToMove>
+    template <int howMuchToMove>
     void fix_up_pointers(iterator iter, iterator end)
     {
         while (true)
@@ -177,11 +178,11 @@ class stable_deque
     void shared_init()
     {
         // add end node
-        Node* data = NodeAllocatorTraits::allocate(nodeAllocator, 1);
+        Node *data = NodeAllocatorTraits::allocate(nodeAllocator, 1);
         NodeAllocatorTraits::construct(
             nodeAllocator,
             data,
-            *((T*)alloca(sizeof(T))), // garbage memory
+            *((T *)alloca(sizeof(T))), // garbage memory
             nodes.size());
         nodes.push_back(data);
     }
@@ -193,7 +194,7 @@ public:
         nodes = NodesDeque(NodePAllocator());
         shared_init();
     }
-    stable_deque(const Allocator& allocator)
+    stable_deque(const Allocator &allocator)
     {
         nodeAllocator = allocator;
         nodes = NodesDeque(allocator);
@@ -201,7 +202,7 @@ public:
     }
     ~stable_deque()
     {
-        for (auto* node : nodes)
+        for (auto *node : nodes)
         {
             NodeAllocatorTraits::deallocate(nodeAllocator, node, 1);
         }
@@ -224,22 +225,22 @@ public:
         return nodes.size() - 1;
     }
 
-    void push_back(const T& value)
+    void push_back(const T &value)
     {
         insert(end(), value);
     }
 
-    void push_front(const T& value)
+    void push_front(const T &value)
     {
-        Node* data = NodeAllocatorTraits::allocate(nodeAllocator, 1);
+        Node *data = NodeAllocatorTraits::allocate(nodeAllocator, 1);
         NodeAllocatorTraits::construct(nodeAllocator, data, value, 0);
         nodes.insert(nodes.begin(), data);
-        fix_up_pointers<1>(begin()+1, end());
+        fix_up_pointers<1>(begin() + 1, end());
     }
 
-    void insert(iterator iterator, const T& value)
+    void insert(iterator iterator, const T &value)
     {
-        Node* data = NodeAllocatorTraits::allocate(nodeAllocator, 1);
+        Node *data = NodeAllocatorTraits::allocate(nodeAllocator, 1);
         NodeAllocatorTraits::construct(nodeAllocator, data, value, iterator.node->pos_in_nodes);
         nodes.insert(nodes.begin() + iterator.node->pos_in_nodes, data);
         fix_up_pointers<1>(iterator, end());
@@ -247,13 +248,13 @@ public:
 
     void erase(iterator iterator)
     {
-        Node* node = iterator.node;
+        Node *node = iterator.node;
         auto nextIter = iterator + 1;
         nodes.erase(nodes.begin() + node->pos_in_nodes);
         NodeAllocatorTraits::deallocate(nodeAllocator, node, 1);
         fix_up_pointers<-1>(nextIter, end());
     }
-    T& operator[](int64_t index)
+    T &operator[](int64_t index)
     {
         assert(index >= 0);
         return nodes[index]->data;
