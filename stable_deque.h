@@ -204,6 +204,7 @@ public:
     {
         for (auto *node : nodes)
         {
+            NodeAllocatorTraits::destroy(nodeAllocator, node);
             NodeAllocatorTraits::deallocate(nodeAllocator, node, 1);
         }
         nodes.clear();
@@ -251,6 +252,7 @@ public:
         Node *node = iterator.node;
         auto nextIter = iterator + 1;
         nodes.erase(nodes.begin() + node->pos_in_nodes);
+        NodeAllocatorTraits::destroy(nodeAllocator, node);
         NodeAllocatorTraits::deallocate(nodeAllocator, node, 1);
         fix_up_pointers<-1>(nextIter, end());
     }
