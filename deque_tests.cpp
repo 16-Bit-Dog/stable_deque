@@ -125,7 +125,7 @@ void erase_front_profile(std::string type_prompt)
 	PREAMBLE(5000)
 	for (auto i = 0; i < count; i++)
 	{
-		container.push_back(magicData);
+		container.insert(container.begin(), magicData);
 	}
 
 	START_PROFILE()

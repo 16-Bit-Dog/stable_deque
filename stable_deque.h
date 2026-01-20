@@ -14,9 +14,9 @@
 
 /*
 What a deque is needed for:
-* fast front/back erase/insert
+* Fast front/back erase/insert
 * O(1) random access
-* middle insert/erase can be slow, doesn't really
+* Middle insert/erase can be slow, doesn't really
   matter since we primarily use a deque as a double
   sided queue.
 
@@ -43,8 +43,8 @@ Limitations:
   half of the 'right' side, so during every deletion we need to fix the 'up pointer' of
   every element on the right-side).
 
-Can this be improved?
-* Probably. Removing the `if` hacks would be a good start.
+Can this be improved? Probably.
+* Removing the `if` hacks would be a good start.
 * Focusing on how to prevent the current limitation of erasure degrading to O(n) would be
   a priority as well.
 * A .natvis to help visualize and debug the structure
