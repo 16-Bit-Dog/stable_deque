@@ -15,6 +15,8 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+find_package(Boost REQUIRED)
+
 enable_testing()
 
 add_executable(
@@ -26,4 +28,5 @@ target_link_libraries(
   GTest::gtest_main
 )
 include(GoogleTest)
+target_include_directories(deque_tests PRIVATE ${Boost_INCLUDE_DIRS})
 gtest_discover_tests(deque_tests)
