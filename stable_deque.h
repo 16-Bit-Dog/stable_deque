@@ -12,43 +12,6 @@
 		}                       \
 	}
 
-/*
-What a deque is needed for:
-* Fast front/back erase/insert
-* O(1) random access
-* Middle insert/erase can be slow, doesn't really
-  matter since we primarily use a deque as a double
-  sided queue.
-
-This implmentation hits all of these marks... most of the time...
-
-What this implementation does that is special:
-* The core of the structure is like a boost::stable_vector
-  (indirection stores each node location)
-* The backing data structure is a deque instead of a vector
-* Instead of fixing 'up pointers' (refer to `stable_vector`'s
-  implementation), we use a 'middle' index to split the deque
-  into two halves (a left and right). This enables us to avoid
-  requiring to do an expensive iteration-pass every `push_front`.
-  This is helpful for a deque since only `.*_front`/`.*_back`
-  operations are expected to be fast (and used commonly).
-  This also means that erasing the ends is normally fast as well
-  (caveats are explained below).
-
-Limitations:
-* Inserting/erasing in the middle of the deque is O(n) due to 'up pointer' fixing
-  (but this is expected for a stable_deque/stable_vector)
-* If erasing more than a side pushes, performance degrades from O(1) to O(n)
-  due to 'up pointer' fixing starting to occur (`begin()` starts returning the starting
-  half of the 'right' side, so during every deletion we need to fix the 'up pointer' of
-  every element on the right-side).
-
-Can this be improved? Probably.
-* Removing the `if` hacks would be a good start.
-* Focusing on how to prevent the current limitation of erasure degrading to O(n) would be
-  a priority as well.
-* A .natvis to help visualize and debug the structure
-*/
 
 template <typename T, typename Allocator = std::allocator<T>>
 class stable_deque
