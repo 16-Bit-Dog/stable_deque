@@ -1,5 +1,9 @@
 # `stable_deque`
 
+[![CI](https://github.com/16-Bit-Dog/stable_deque/actions/workflows/ci.yml/badge.svg)](https://github.com/16-Bit-Dog/stable_deque/actions/workflows/ci.yml)
+
+A C++20 deque implementation with stable iterators/references.
+
 ## What a deque is needed for:
 - Fast front/back erase/insert
 - O(1) random access

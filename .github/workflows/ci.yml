@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc-14, clang-18]
+        build_type: [Debug, Release]
+        modules: [OFF, ON]
+        exclude:
+          # Skip modules for older compilers that may have issues
+          - compiler: gcc-14
+            modules: ON
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build libboost-all-dev
+        if [ "${{ matrix.compiler }}" = "gcc-14" ]; then
+          sudo apt-get install -y g++-14
+        elif [ "${{ matrix.compiler }}" = "clang-18" ]; then
+          sudo apt-get install -y clang-18 libc++-18-dev libc++abi-18-dev
+        fi
+    
+    - name: Configure CMake (GCC)
+      if: startsWith(matrix.compiler, 'gcc')
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          -DCMAKE_CXX_COMPILER=g++-14 \
+          -DSTABLE_DEQUE_USE_MODULES=${{ matrix.modules }}
+    
+    - name: Configure CMake (Clang)
+      if: startsWith(matrix.compiler, 'clang')
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          -DCMAKE_CXX_COMPILER=clang++-18 \
+          -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+          -DSTABLE_DEQUE_USE_MODULES=${{ matrix.modules }}
+    
+    - name: Build
+      run: cmake --build build
+    
+    - name: Test
+      working-directory: build
+      run: ctest --output-on-failure
+
+  build-windows:
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Debug, Release]
+        modules: [OFF, ON]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Boost
+      run: |
+        choco install boost-msvc-14.3 -y
+    
+    - name: Configure CMake
+      run: |
+        cmake -B build -G "Visual Studio 17 2022" -A x64 `
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
+          -DSTABLE_DEQUE_USE_MODULES=${{ matrix.modules }} `
+          -DBoost_ROOT="C:/local/boost_1_85_0"
+    
+    - name: Build
+      run: cmake --build build --config ${{ matrix.build_type }}
+    
+    - name: Test
+      working-directory: build
+      run: ctest -C ${{ matrix.build_type }} --output-on-failure
+
+  build-macos:
+    runs-on: macos-14
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Debug, Release]
+        modules: [OFF]  # macOS Clang modules support is limited
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: |
+        brew install cmake ninja boost
+    
+    - name: Configure CMake
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          -DSTABLE_DEQUE_USE_MODULES=${{ matrix.modules }}
+    
+    - name: Build
+      run: cmake --build build
+    
+    - name: Test
+      working-directory: build
+      run: ctest --output-on-failure
