@@ -2,12 +2,33 @@
 #include <cstdint>
 #include <deque>
 #include <memory>
+#include <cassert>
+
+#if defined(_WIN32)
+	#include <malloc.h>
+#else
+	#include <alloca.h>
+#endif
+
+#if defined(_MSC_VER)
+	#define STABLE_DEQUE_DEBUG_BREAK() __debugbreak()
+#elif defined(__has_builtin)
+	#if __has_builtin(__builtin_debugtrap)
+		#define STABLE_DEQUE_DEBUG_BREAK() __builtin_debugtrap()
+	#elif __has_builtin(__builtin_trap)
+		#define STABLE_DEQUE_DEBUG_BREAK() __builtin_trap()
+	#else
+		#define STABLE_DEQUE_DEBUG_BREAK() ((void)0)
+	#endif
+#else
+	#define STABLE_DEQUE_DEBUG_BREAK() ((void)0)
+#endif
 
 #define ASSERT_BREAK(condition) \
 	{                           \
 		if (!(condition))       \
 		{                       \
-			__debugbreak();     \
+			STABLE_DEQUE_DEBUG_BREAK(); \
 			assert(false);      \
 		}                       \
 	}

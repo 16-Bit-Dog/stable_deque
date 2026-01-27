@@ -1,24 +1,47 @@
+# Build directories
 CMakeFiles
 _deps
 _cmrc
 Debug
 Release
 x64
+build/
+
+# Visual Studio
 .vs
 *.vcxproj
 *.vcxproj.filters
-*.cmake
 *.sln
 *.pdb
 *.tlog
 *.exe
-*.clang-format
 *.recipe
 *.obj
 *.ilk
 *.log
 *.dll
-*.cmake
 *.vcxproj.user
-CMakeCache.txt
 *.lib
+
+# CMake
+*.cmake
+!.github/**/*.cmake
+CMakeCache.txt
+
+# Configuration files
+*.clang-format
+
+# C++20 Module artifacts
+*.gcm
+*.pcm
+*.ifc
+*.bmi
+gcm.cache/
+CMakeFiles/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~

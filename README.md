@@ -1,5 +1,9 @@
 # `stable_deque`
 
+[![CI](https://github.com/16-Bit-Dog/stable_deque/actions/workflows/ci.yml/badge.svg)](https://github.com/16-Bit-Dog/stable_deque/actions/workflows/ci.yml)
+
+A C++20 deque implementation with stable iterators/references.
+
 ## What a deque is needed for:
 - Fast front/back erase/insert
 - O(1) random access
@@ -21,6 +25,88 @@
   the structure into two halves (a left and right). This enables
   us to avoid requiring to do an expensive "up pointer' fix pass 
   every `push_front`/`erase`.
+
+## Requirements
+
+- C++20 compatible compiler:
+  - GCC 13+ (GCC 14+ for modules)
+  - Clang 16+
+  - MSVC 2022+
+- CMake 3.28+
+- Boost (for tests only)
+
+## Building
+
+### Header-Only (Traditional)
+
+```bash
+mkdir build && cd build
+cmake ..
+cmake --build .
+ctest
+```
+
+### With C++20 Modules
+
+```bash
+mkdir build && cd build
+cmake .. -DSTABLE_DEQUE_USE_MODULES=ON
+cmake --build .
+```
+
+**Note:** C++20 modules support varies by compiler. MSVC and Clang 16+ have the best support.
+
+## Usage
+
+### Header-Only (Traditional)
+
+```cpp
+#include "stable_deque.h"
+
+int main() {
+    stable_deque<int> sd;
+    sd.push_back(1);
+    sd.push_front(0);
+    
+    auto it = sd.begin();
+    sd.push_back(2);  // Iterator 'it' remains valid!
+    
+    return *it;  // Returns 0
+}
+```
+
+### C++20 Modules
+
+```cpp
+import stable_deque;
+
+int main() {
+    stable_deque<int> sd;
+    sd.push_back(1);
+    sd.push_front(0);
+    
+    auto it = sd.begin();
+    sd.push_back(2);  // Iterator 'it' remains valid!
+    
+    return *it;  // Returns 0
+}
+```
+
+### CMake Integration
+
+#### Header-Only
+
+```cmake
+add_subdirectory(stable_deque)
+target_link_libraries(your_target PRIVATE stable_deque_header)
+```
+
+#### Modules
+
+```cmake
+add_subdirectory(stable_deque)
+target_link_libraries(your_target PRIVATE stable_deque_module)
+```
 
 ## Limitations
 * Inserting/erasing in the middle of the deque is O(n) due to 'up pointer' fixing
