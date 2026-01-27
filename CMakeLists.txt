@@ -50,6 +50,10 @@ endif()
 add_executable(deque_tests deque_tests.cpp)
 target_link_libraries(deque_tests PRIVATE GTest::gtest_main)
 target_include_directories(deque_tests PRIVATE ${Boost_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Copy test data files to build directory
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/magic_data.txt ${CMAKE_CURRENT_BINARY_DIR}/magic_data.txt COPYONLY)
+
 include(GoogleTest)
 gtest_discover_tests(deque_tests)
 
