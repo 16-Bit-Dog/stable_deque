@@ -38,6 +38,7 @@
 
 1. Install Boost and ensure it is added to path
 2. Run `configure_TARGET.sh`
+3. Either run the respective `build_TARGET.sh` or use visual studio
 
 Note: Currently this project is only tested on `Windows 11` with `vs2022` & `ninja`+`clang`
 
