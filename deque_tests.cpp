@@ -214,7 +214,7 @@ public:
 			// 2. Calculate bar length relative to max_val and step_count
 			int64_t bar_length = 0;
 			if (max_val > 0) {
-				// Cast to double for precision, then back to int
+				// Cast to double for non int operator
 				bar_length = (int64_t)(((double)item.second / (double)max_val) * dstep_count);
 			}
 
@@ -223,7 +223,7 @@ public:
 				std::cout << "#";
 			}
 
-			// 4. Print the actual numeric value for clarity
+			// 4. Print the value
 			std::cout << " (" << item.second << ")\n";
 		}
 
