@@ -78,9 +78,9 @@ TEST(StableDequeTest, Smoke)
 }
 
 #define PREAMBLE(N) \
-	std::ifstream stream("magic_data.txt"); \
+	std::ifstream stream(std::string(ROOT_DIR)+std::string("/magic_data.txt")); \
 	char firstChar{}; \
-	stream.read(&firstChar, 1); \
+	stream.get(firstChar); \
 	std::string firstCharString{}; \
 	firstCharString += firstChar; \
 	T magicData = T(std::stoi(firstCharString)); \
@@ -214,7 +214,6 @@ public:
 			// 2. Calculate bar length relative to max_val and step_count
 			int64_t bar_length = 0;
 			if (max_val > 0) {
-				// Cast to double for non int operator
 				bar_length = (int64_t)(((double)item.second / (double)max_val) * dstep_count);
 			}
 
@@ -223,7 +222,7 @@ public:
 				std::cout << "#";
 			}
 
-			// 4. Print the value
+			// 4. Print the val
 			std::cout << " (" << item.second << ")\n";
 		}
 
@@ -234,7 +233,7 @@ public:
 #define str(chars) std::string(chars)
 TEST(StableDequeTest, Perf)
 {
-	// Note: removed `vector_stable_deque` because it is such a large diff. in performance that it wreaks the graphs scaling
+	// Note: removed `vector_stable_deque` because it is such a large (negative) diff. in performance that it wreaks the graphs scaling
 #define PROFILE_FUNC(func_name, T) \
 	{ \
 		std::cout << "\n" << #func_name << "<" << typeid(T).name() << ">:\n"; \

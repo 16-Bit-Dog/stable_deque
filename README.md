@@ -43,112 +43,113 @@ Note: Currently this project is only tested on `Windows 11` with `vs2022`
 
 ## Benchmark results
 
+MSVC-Release:
 ```
 push_front_profile<int>:
-(n = 5000) push_front_profile_profile<deque<int>>(...): 7743400
-(n = 5000) push_front_profile_profile<stable_deque<int>>(...): 11019500
-(n = 5000) push_front_profile_profile<stable_vector<int>>(...): 180229300
-(n = 5000) push_front_profile_profile<vector<int>>(...): 3813200
+(n = 5000) push_front_profile_profile<deque<int>>(...): 149500
+(n = 5000) push_front_profile_profile<stable_deque<int>>(...): 522200
+(n = 5000) push_front_profile_profile<stable_vector<int>>(...): 20791500
+(n = 5000) push_front_profile_profile<vector<int>>(...): 885400
 ----[push_front_profile]----
-        deque<int> | #### (7743400)
- stable_deque<int> | ###### (11019500)
-stable_vector<int> | #################################################################################################### (180229300)
-       vector<int> | ## (3813200)
+        deque<int> |  (149500)
+ stable_deque<int> | ## (522200)
+stable_vector<int> | #################################################################################################### (20791500)
+       vector<int> | #### (885400)
 -----push_front_profile-----
 
 
 
 push_front_profile<struct BigData>:
-(n = 5000) push_front_profile_profile<deque<struct BigData>>(...): 13231500
-(n = 5000) push_front_profile_profile<stable_deque<struct BigData>>(...): 15254900
-(n = 5000) push_front_profile_profile<stable_vector<struct BigData>>(...): 186396100
-(n = 5000) push_front_profile_profile<vector<struct BigData>>(...): 1293807700
+(n = 5000) push_front_profile_profile<deque<struct BigData>>(...): 4266100
+(n = 5000) push_front_profile_profile<stable_deque<struct BigData>>(...): 5094200
+(n = 5000) push_front_profile_profile<stable_vector<struct BigData>>(...): 40202700
+(n = 5000) push_front_profile_profile<vector<struct BigData>>(...): 1302112400
 ----[push_front_profile]----
-        deque<struct BigData> | # (13231500)
- stable_deque<struct BigData> | # (15254900)
-stable_vector<struct BigData> | ############## (186396100)
-       vector<struct BigData> | #################################################################################################### (1293807700)
+        deque<struct BigData> |  (4266100)
+ stable_deque<struct BigData> |  (5094200)
+stable_vector<struct BigData> | ### (40202700)
+       vector<struct BigData> | #################################################################################################### (1302112400)
 -----push_front_profile-----
 
 
 
 push_back_profile<int>:
-(n = 5000) push_back_profile_profile<deque<int>>(...): 774300
-(n = 5000) push_back_profile_profile<stable_deque<int>>(...): 13265500
-(n = 5000) push_back_profile_profile<stable_vector<int>>(...): 13345800
-(n = 5000) push_back_profile_profile<vector<int>>(...): 524500
+(n = 5000) push_back_profile_profile<deque<int>>(...): 111300
+(n = 5000) push_back_profile_profile<stable_deque<int>>(...): 639300
+(n = 5000) push_back_profile_profile<stable_vector<int>>(...): 498900
+(n = 5000) push_back_profile_profile<vector<int>>(...): 54200
 ----[push_back_profile]----
-        deque<int> | ##### (774300)
- stable_deque<int> | ################################################################################################### (13265500)
-stable_vector<int> | #################################################################################################### (13345800)
-       vector<int> | ### (524500)
+        deque<int> | ################# (111300)
+ stable_deque<int> | #################################################################################################### (639300)
+stable_vector<int> | ############################################################################## (498900)
+       vector<int> | ######## (54200)
 -----push_back_profile-----
 
 
 
 push_back_profile<struct BigData>:
-(n = 5000) push_back_profile_profile<deque<struct BigData>>(...): 6234100
-(n = 5000) push_back_profile_profile<stable_deque<struct BigData>>(...): 18106900
-(n = 5000) push_back_profile_profile<stable_vector<struct BigData>>(...): 17707200
-(n = 5000) push_back_profile_profile<vector<struct BigData>>(...): 16700700
+(n = 5000) push_back_profile_profile<deque<struct BigData>>(...): 4464700
+(n = 5000) push_back_profile_profile<stable_deque<struct BigData>>(...): 4774900
+(n = 5000) push_back_profile_profile<stable_vector<struct BigData>>(...): 5436600
+(n = 5000) push_back_profile_profile<vector<struct BigData>>(...): 15351200
 ----[push_back_profile]----
-        deque<struct BigData> | ################################## (6234100)
- stable_deque<struct BigData> | #################################################################################################### (18106900)
-stable_vector<struct BigData> | ################################################################################################# (17707200)
-       vector<struct BigData> | ############################################################################################ (16700700)
+        deque<struct BigData> | ############################# (4464700)
+ stable_deque<struct BigData> | ############################### (4774900)
+stable_vector<struct BigData> | ################################### (5436600)
+       vector<struct BigData> | #################################################################################################### (15351200)
 -----push_back_profile-----
 
 
 
 erase_front_profile<int>:
-(n = 5000) erase_front_profile_profile<deque<int>>(...): 12110800
-(n = 5000) erase_front_profile_profile<stable_deque<int>>(...): 15018700
-(n = 5000) erase_front_profile_profile<stable_vector<int>>(...): 316584600
-(n = 5000) erase_front_profile_profile<vector<int>>(...): 21757000
+(n = 5000) erase_front_profile_profile<deque<int>>(...): 35500
+(n = 5000) erase_front_profile_profile<stable_deque<int>>(...): 144200
+(n = 5000) erase_front_profile_profile<stable_vector<int>>(...): 63678700
+(n = 5000) erase_front_profile_profile<vector<int>>(...): 19853400
 ----[erase_front_profile]----
-        deque<int> | ### (12110800)
- stable_deque<int> | #### (15018700)
-stable_vector<int> | #################################################################################################### (316584600)
-       vector<int> | ###### (21757000)
+        deque<int> |  (35500)
+ stable_deque<int> |  (144200)
+stable_vector<int> | #################################################################################################### (63678700)
+       vector<int> | ############################### (19853400)
 -----erase_front_profile-----
 
 
 
 erase_front_profile<struct BigData>:
-(n = 5000) erase_front_profile_profile<deque<struct BigData>>(...): 11919500
-(n = 5000) erase_front_profile_profile<stable_deque<struct BigData>>(...): 16366500
-(n = 5000) erase_front_profile_profile<stable_vector<struct BigData>>(...): 347976400
-(n = 5000) erase_front_profile_profile<vector<struct BigData>>(...): 1996307700
+(n = 5000) erase_front_profile_profile<deque<struct BigData>>(...): 41000
+(n = 5000) erase_front_profile_profile<stable_deque<struct BigData>>(...): 1647000
+(n = 5000) erase_front_profile_profile<stable_vector<struct BigData>>(...): 75686400
+(n = 5000) erase_front_profile_profile<vector<struct BigData>>(...): 2154296800
 ----[erase_front_profile]----
-        deque<struct BigData> |  (11919500)
- stable_deque<struct BigData> |  (16366500)
-stable_vector<struct BigData> | ################# (347976400)
-       vector<struct BigData> | #################################################################################################### (1996307700)
+        deque<struct BigData> |  (41000)
+ stable_deque<struct BigData> |  (1647000)
+stable_vector<struct BigData> | ### (75686400)
+       vector<struct BigData> | #################################################################################################### (2154296800)
 -----erase_front_profile-----
 
 
 
 erase_back_profile<int>:
-(n = 5000) erase_back_profile_profile<stable_deque<int>>(...): 18587000
-(n = 5000) erase_back_profile_profile<stable_vector<int>>(...): 114631100
-(n = 5000) erase_back_profile_profile<vector<int>>(...): 2720700
+(n = 5000) erase_back_profile_profile<stable_deque<int>>(...): 227600
+(n = 5000) erase_back_profile_profile<stable_vector<int>>(...): 91700
+(n = 5000) erase_back_profile_profile<vector<int>>(...): 0
 ----[erase_back_profile]----
         deque<int> |  (0)
- stable_deque<int> | ################ (18587000)
-stable_vector<int> | #################################################################################################### (114631100)
-       vector<int> | ## (2720700)
+ stable_deque<int> | #################################################################################################### (227600)
+stable_vector<int> | ######################################## (91700)
+       vector<int> |  (0)
 -----erase_back_profile-----
 
 
 
 erase_back_profile<struct BigData>:
-(n = 5000) erase_back_profile_profile<stable_deque<struct BigData>>(...): 20751200
-(n = 5000) erase_back_profile_profile<stable_vector<struct BigData>>(...): 146039800
-(n = 5000) erase_back_profile_profile<vector<struct BigData>>(...): 2576800
+(n = 5000) erase_back_profile_profile<stable_deque<struct BigData>>(...): 1884900
+(n = 5000) erase_back_profile_profile<stable_vector<struct BigData>>(...): 194200
+(n = 5000) erase_back_profile_profile<vector<struct BigData>>(...): 0
 ----[erase_back_profile]----
         deque<struct BigData> |  (0)
- stable_deque<struct BigData> | ############## (20751200)
-stable_vector<struct BigData> | #################################################################################################### (146039800)
-       vector<struct BigData> | # (2576800)
+ stable_deque<struct BigData> | #################################################################################################### (1884900)
+stable_vector<struct BigData> | ########## (194200)
+       vector<struct BigData> |  (0)
 -----erase_back_profile-----
 ```

@@ -5,6 +5,8 @@ project(stable_deque)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(ROOT_DIR ${CMAKE_SOURCE_DIR})
+
 find_package(Boost REQUIRED)
 
 include(FetchContent)
@@ -31,6 +33,10 @@ target_include_directories(
   deque_tests
   PRIVATE
   ${Boost_INCLUDE_DIRS}
+)
+target_compile_definitions(
+  deque_tests
+  PRIVATE -DROOT_DIR="${ROOT_DIR}"
 )
 include(GoogleTest)
 gtest_discover_tests(deque_tests)

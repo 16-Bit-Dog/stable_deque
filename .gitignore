@@ -5,6 +5,7 @@ Debug
 Release
 x64
 .vs
+build.ninja
 *.vcxproj
 *.vcxproj.filters
 *.cmake
@@ -23,3 +24,6 @@ x64
 CMakeCache.txt
 *.lib
 *.png
+*.ninja_deps
+*.ninja_log
+*.a
