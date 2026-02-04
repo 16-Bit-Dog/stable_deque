@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 
 project(stable_deque)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(Boost REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -15,18 +17,20 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-find_package(Boost REQUIRED)
-
 enable_testing()
 
 add_executable(
-    deque_tests
-    deque_tests.cpp
+  deque_tests
+  deque_tests.cpp
 )
 target_link_libraries(
-    deque_tests
+  deque_tests
   GTest::gtest_main
 )
+target_include_directories(
+  deque_tests
+  PRIVATE
+  ${Boost_INCLUDE_DIRS}
+)
 include(GoogleTest)
-target_include_directories(deque_tests PRIVATE ${Boost_INCLUDE_DIRS})
 gtest_discover_tests(deque_tests)

@@ -2,10 +2,11 @@
 #include <cstdint>
 #include <deque>
 #include <memory>
+#include <cassert>
 
 // A stable deque implementation
 template <typename T, typename Allocator = std::allocator<T>>
-class old_stable_deque
+class vector_stable_deque
 {
     struct Node
     {
@@ -25,12 +26,12 @@ class old_stable_deque
 
     class iterator
     {
-        friend class old_stable_deque;
+        friend class vector_stable_deque;
 
         // Unlike a stable_vector, we need one additional pointer to store the deque that
         // contains our actual `Node` data.
         // This is required since unlike a stable_vector which has its `Node`'s stored in
-        // a contiguous vector (pointer arithmetic iterates to the next node), a old_stable_deque
+        // a contiguous vector (pointer arithmetic iterates to the next node), a vector_stable_deque
         // is backed by a non-contiguous container (a deque).
         // Therefore we require an additional pointer so that we have a way to fetch "the next node".
         NodesDeque &nodes_ref;
@@ -178,19 +179,19 @@ class old_stable_deque
     }
 
 public:
-    old_stable_deque()
+    vector_stable_deque()
     {
         nodeAllocator = NodeAllocator();
         nodes = NodesDeque(NodePAllocator());
         shared_init();
     }
-    old_stable_deque(const Allocator &allocator)
+    vector_stable_deque(const Allocator &allocator)
     {
         nodeAllocator = allocator;
         nodes = NodesDeque(allocator);
         shared_init();
     }
-    ~old_stable_deque()
+    ~vector_stable_deque()
     {
         for (auto *node : nodes)
         {

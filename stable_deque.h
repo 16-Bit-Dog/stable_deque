@@ -2,16 +2,7 @@
 #include <cstdint>
 #include <deque>
 #include <memory>
-
-#define ASSERT_BREAK(condition) \
-	{                           \
-		if (!(condition))       \
-		{                       \
-			__debugbreak();     \
-			assert(false);      \
-		}                       \
-	}
-
+#include <cassert>
 
 template <typename T, typename Allocator = std::allocator<T>>
 class stable_deque
@@ -35,7 +26,7 @@ class stable_deque
 
 		/// Data is stored in this order (relative to the provided iterator):
 		///[begin(), middle](middle, end())
-		std::deque<Node *, NodePAllocator> data;
+		std::deque<Node*, NodePAllocator> data;
 	} nodeData;
 
 	class iterator
@@ -56,7 +47,7 @@ class stable_deque
 		{
 		}
 
-		decltype(stable_deque_data::data)::iterator get_underlying_data_iterator() const
+		std::deque<Node*, NodePAllocator>::iterator get_underlying_data_iterator() const
 		{
 			if (isLeft)
 				return nodeDataRef.data.begin() + (nodeDataRef.middle - node->pos);
@@ -364,7 +355,7 @@ public:
 	}
 	T &operator[](int64_t index)
 	{
-		ASSERT_BREAK(index >= 0 && index < end().node->pos + nodeData.middle + 1);
+		assert(index >= 0 && index < end().node->pos + nodeData.middle + 1);
 		return *(begin() + index);
 	}
 };
