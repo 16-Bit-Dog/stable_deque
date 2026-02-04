@@ -26,7 +26,7 @@
 * Inserting/erasing in the middle of the deque is O(n) due to 'up pointer' fixing
   (but this is expected for a `stable_deque`/`stable_vector`)
 * If erasing more than a side pushes, performance degrades from O(1) to O(n)
-  due to 'up pointer' fixing starting to occur (`begin()` starts returning nodes on the right-hand-side)
+  due to 'up pointer' fixing starting to occur (`begin()`/`end()` starts returning nodes on the 'slow' side)
 
 ## Can this be improved? Probably.
 * Removing the `if` hacks would be a good start.
@@ -36,10 +36,10 @@
 
 ## How to build
 
-1. Run `configure.sh`
-2. Install Boost and ensure it is added to path 
+1. Install Boost and ensure it is added to path
+2. Run `configure_TARGET.sh`
 
-Note: Currently this project is only tested on `Windows 11` with `vs2022`
+Note: Currently this project is only tested on `Windows 11` with `vs2022` & `ninja`+`clang`
 
 ## Benchmark results
 
